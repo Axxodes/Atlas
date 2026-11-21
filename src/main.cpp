@@ -3,7 +3,9 @@
 #include <cstring>
 
 #define OUTPUT_ERROR(...) (std::cerr << __VA_ARGS__ << '\n')
-#include <filehandler.hpp>
+
+#include <malloc_handler.hpp>
+#include <file_handler.hpp>
 
 int wmain(int argc, const wchar_t* argv[])
 {
@@ -17,13 +19,13 @@ int wmain(int argc, const wchar_t* argv[])
 
     if (argc >= 3) 
     {
-        if (wcscmp(argv[2],L"1")) 
+        if (!wcscmp(argv[2],L"1")) 
         {
             decompress = true;
         }
         else 
         {
-            if (wcscmp(argv[2],L"0")) {}
+            if (!wcscmp(argv[2],L"0")) {}
             else
             {
                 OUTPUT_ERROR("Failed, (hint: incorrect third arg, needs to be either 0 or 1) please rerun the .exe with hyphen-marked args adjusted: atlas.exe -fileExample.test-");
@@ -32,15 +34,41 @@ int wmain(int argc, const wchar_t* argv[])
         }
     }
 
+    LARGE_INTEGER freq;
+	QueryPerformanceFrequency(&freq);
+
+    LARGE_INTEGER a, b;
+	QueryPerformanceCounter(&a);
+
     const wchar_t* fileName = argv[1];
-    printf("%s\n",fileName);
 
     openFile(fileName);
-    
-    for(size_t i{0};i<fileBuffer.capacity;i++)
+
+    if(decompress == false)
     {
-        printf("%s ",fileBuffer.memory[i]);
+        std::wstring outputFileName = fileName;
+        outputFileName += L'c';
+
+        createFile(outputFileName.c_str());
+
+        allocateCharMemory(fileBuffer.used);
+
+        for(size_t i{0};i<fileBuffer.used;i++)
+        {
+            charMemory.memory[i] = fileBuffer.memory[i];
+        }
+
+        // do some shit to this memory
+
+        writeToFile(outputFileName.c_str(),charMemory);
     }
+
+    QueryPerformanceCounter(&b);
+
+    double ticks = static_cast<double>(b.QuadPart - a.QuadPart);
+
+    wprintf(L"Performed task on %ls\n", fileName);
+    printf("\nFinished within %3.0f ticks on a %3.0f Hz clock\n",ticks,static_cast<double>(freq.QuadPart));
 
     RESET_FILEBUFFER();
     return 0;

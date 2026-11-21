@@ -12,7 +12,13 @@ Currently, only on windows. We're focusing on the compressor itself and only the
 
 # How to use Atlas?
 
-The .exe file is the application itself, you can run it with a command prompt or by double clicking it.
+Atlas (for users) is a terminal based compressor.
+To run the compressor on a given (text based) file, insert the following args:
+
+atlas.exe -file.example- (-mode-)
+
+Where mode is either 1 to mark decompressing,
+or isn't added because compressing is the default.
 
 # Why the name Atlas?
 
