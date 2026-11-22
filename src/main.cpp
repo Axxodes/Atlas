@@ -11,7 +11,7 @@ int wmain(int argc, const wchar_t* argv[])
 {
     if(argc < 2)
     {
-        OUTPUT_ERROR("Filename missing, please rerun the .exe with hyphen-marked args added: atlas.exe -fileExample.test-");
+        OUTPUT_ERROR("Filename missing, please rerun the .exe with the following args: atlas.exe fileExample.test");
         return 1;
     }
 
@@ -25,10 +25,13 @@ int wmain(int argc, const wchar_t* argv[])
         }
         else 
         {
-            if (!wcscmp(argv[2],L"0")) {}
+            if (!wcscmp(argv[2],L"0"))
+            {
+                OUTPUT_ERROR("WARNING: Mode is optional, and should only be used when decompressing. Continueing...");
+            }
             else
             {
-                OUTPUT_ERROR("Failed, (hint: incorrect third arg, needs to be either 0 or 1) please rerun the .exe with hyphen-marked args adjusted: atlas.exe -fileExample.test-");
+                OUTPUT_ERROR("Failed, (hint: incorrect third arg, needs to be either 0 or 1) please rerun the .exe with the following args adjusted: atlas.exe fileExample.test (mode)");
                 return 1;
             }
         }
@@ -42,16 +45,27 @@ int wmain(int argc, const wchar_t* argv[])
 
     const wchar_t* fileName = argv[1];
 
-    openFile(fileName);
+    if(!openFile(fileName))
+    {
+        return 1;
+    }
 
     if(decompress == false)
     {
         std::wstring outputFileName = fileName;
         outputFileName += L'c';
 
-        createFile(outputFileName.c_str());
+        if(!createFile(outputFileName.c_str()))
+        {
+            OUTPUT_ERROR("Stopped compressor,");
+            return 1;
+        }
 
-        allocateCharMemory(fileBuffer.used);
+        if(!allocateCharMemory(fileBuffer.used))
+        {
+            OUTPUT_ERROR("Aborting...");
+            return 1;
+        }
 
         for(size_t i{0};i<fileBuffer.used;i++)
         {
@@ -60,7 +74,16 @@ int wmain(int argc, const wchar_t* argv[])
 
         // do some shit to this memory
 
-        writeToFile(outputFileName.c_str(),charMemory);
+        if(!writeToFile(outputFileName.c_str(),charMemory))
+        {
+            OUTPUT_ERROR("Aborting...");
+            return 1;
+        }   
+    }
+
+    if(decompress == true)
+    {
+        wprintf(L"Didn't perform task on %ls due to decompressing not being implemented on current patch.\n", fileName);
     }
 
     QueryPerformanceCounter(&b);

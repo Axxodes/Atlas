@@ -8,12 +8,12 @@ struct CharMemory
 
 CharMemory charMemory {};
 
-bool allocateCharMemory(size_t size)
+inline bool allocateCharMemory(size_t size)
 {
     charMemory.memory = static_cast<char*>(malloc(sizeof(char)*size));
     if(!charMemory.memory)
     {
-        OUTPUT_ERROR("Failed to allocate CharMemory, aborting...");
+        OUTPUT_ERROR("Failed to allocate CharMemory...");
         return false;
     }
 

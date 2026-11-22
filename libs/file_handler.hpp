@@ -18,7 +18,7 @@ fileBuffer.capacity = 0; \
 fileBuffer.used = 0;} \
 while (false) 
 
-bool allocateFileBuffer(size_t size)
+inline bool allocateFileBuffer(size_t size)
 {
     // round UP for the input
 
@@ -35,11 +35,28 @@ bool allocateFileBuffer(size_t size)
     return true;
 }
 
-bool openFile(const wchar_t* filePath)
+inline bool checkFileSize(HANDLE file, LARGE_INTEGER* fileSizeOut)
+{
+    LARGE_INTEGER fileSize {};
+    
+    if(GetFileSizeEx(file,&fileSize) == 0)
+    {
+        OUTPUT_ERROR("Filesize acquired below 0...");
+
+        CloseHandle(file);
+        return false;
+    }
+
+    fileSizeOut[0] = fileSize;
+
+    return true;
+}
+
+inline bool openFile(const wchar_t* filePath)
 {
     // you can create a wide char by putting L infront of the first quotation mark
 
-    HANDLE file = CreateFileW(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+    HANDLE file = CreateFileW(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if (file == INVALID_HANDLE_VALUE)
     {
         DWORD error = GetLastError();
@@ -50,14 +67,7 @@ bool openFile(const wchar_t* filePath)
     }
 
     LARGE_INTEGER filesize {};
-    
-    if(GetFileSizeEx(file,&filesize) == 0)
-    {
-        OUTPUT_ERROR("Filesize acquired below 0... aborting.");
-
-        CloseHandle(file);
-        return false;
-    }
+    checkFileSize(file,&filesize);
 
     DWORD bytesRead = 0;
 
@@ -85,7 +95,7 @@ bool openFile(const wchar_t* filePath)
     return true;
 }
 
-bool createFile(const wchar_t* filePath)
+inline bool createFile(const wchar_t* filePath)
 {
     HANDLE file = CreateFileW(filePath,GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     if (file == INVALID_HANDLE_VALUE)
@@ -101,9 +111,9 @@ bool createFile(const wchar_t* filePath)
     return true;
 }
 
-bool checkFileSize(const wchar_t* filePath, int* fileSizeOut)
+inline bool checkFileSize(const wchar_t* filePath, int* fileSizeOut)
 {
-    HANDLE file = CreateFileW(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+    HANDLE file = CreateFileW(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if (file == INVALID_HANDLE_VALUE)
     {
         DWORD error = GetLastError();
@@ -129,7 +139,7 @@ bool checkFileSize(const wchar_t* filePath, int* fileSizeOut)
     return true;
 }
 
-bool writeToFile(const wchar_t* filePath,CharMemory memoryBlock)
+inline bool writeToFile(const wchar_t* filePath,CharMemory memoryBlock)
 {
     HANDLE file = CreateFileW(filePath,GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS ,FILE_ATTRIBUTE_NORMAL,NULL);
     if (file == INVALID_HANDLE_VALUE)
