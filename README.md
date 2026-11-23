@@ -1,6 +1,6 @@
 # What is Atlas?
 
-Iapetus is a C++ compressor with its main focus being very small file size.
+Atlas is a C++ compressor with its main focus being EXTREMELY small file size whilst being blazingly fast.
 It is a tool for the Iapetus game engine.
 
 C++20 required

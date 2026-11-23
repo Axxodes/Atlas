@@ -13,6 +13,7 @@ struct FileBuffer
 FileBuffer fileBuffer {};
 
 #define RESET_FILEBUFFER() do { \
+std::free(fileBuffer.memory); \
 fileBuffer.memory = nullptr; \
 fileBuffer.capacity = 0; \
 fileBuffer.used = 0;} \
