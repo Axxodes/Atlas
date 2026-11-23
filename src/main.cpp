@@ -86,8 +86,8 @@ int wmain(int argc, const wchar_t* argv[])
 
         for(size_t i{0};i<fileBuffer.used;i++)
         {
-            size_t count {1};
-            for(size_t u{i+1};u<(i+std::min(fileBuffer.used,size_t(9)));u++)
+            size_t count {0};
+            for(size_t u{i+1};u<(i+std::min(fileBuffer.used,size_t(32)));u++)
             {
                 if(fileBuffer.memory[i] == fileBuffer.memory[u-1])
                 {
