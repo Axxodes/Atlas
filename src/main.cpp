@@ -98,7 +98,7 @@ int wmain(int argc, const wchar_t* argv[])
                 break;
             }
 
-            if(count<=3)
+            if(count<3)
             {
                 charMemory.memory[out] = fileBuffer.memory[i];
                 out++;
