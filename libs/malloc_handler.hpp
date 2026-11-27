@@ -21,7 +21,7 @@ inline bool allocateCharMemory(size_t size)
     charMemory.memory = static_cast<char*>(malloc(sizeof(char)*size));
     if(!charMemory.memory)
     {
-        OUTPUT_ERROR("Failed to allocate CharMemory...");
+        printf("Failed to allocate CharMemory...\n");
         return false;
     }
 
@@ -34,14 +34,14 @@ inline char* allocateCharMemory(size_t size, bool functionChooser)
 {
     if(functionChooser == false)
     {
-        OUTPUT_ERROR("Warning: The functionChooser param in allocateCharMemory is supposed to be true. (Internal code warning, make an issue on GitHub)");
+        printf("Warning: The functionChooser param in allocateCharMemory is supposed to be true. (Internal code warning, make an issue on GitHub)\n");
     }
     CharMemory tempCharMemory {};
 
     tempCharMemory.memory = static_cast<char*>(malloc(sizeof(char)*size));
-    if(!charMemory.memory)
+    if(!tempCharMemory.memory)
     {
-        OUTPUT_ERROR("Failed to allocate CharMemory...");
+        printf("Failed to allocate CharMemory... (hint: %lld)\n",size);
         return nullptr;
     }
 

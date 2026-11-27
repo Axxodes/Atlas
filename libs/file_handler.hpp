@@ -55,8 +55,6 @@ inline bool checkFileSize(HANDLE file, LARGE_INTEGER* fileSizeOut)
 
 inline bool openFile(const wchar_t* filePath)
 {
-    // you can create a wide char by putting L infront of the first quotation mark
-
     HANDLE file = CreateFileW(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if (file == INVALID_HANDLE_VALUE)
     {
@@ -154,7 +152,7 @@ inline bool writeToFile(const wchar_t* filePath,CharMemory memoryBlock)
 
     DWORD bytesWritten = 0;
 
-    if(!WriteFile(file,memoryBlock.memory,memoryBlock.capacity,&bytesWritten,NULL))
+    if(!WriteFile(file,memoryBlock.memory,static_cast<DWORD>(memoryBlock.used),&bytesWritten,NULL))
     {
         DWORD error = GetLastError();
         OUTPUT_ERROR(error);
