@@ -30,12 +30,8 @@ inline bool allocateCharMemory(size_t size)
     return true;
 }
 
-inline char* allocateCharMemory(size_t size, bool functionChooser)
+inline char* allocateSecondCharMemory(size_t size)
 {
-    if(functionChooser == false)
-    {
-        printf("Warning: The functionChooser param in allocateCharMemory is supposed to be true. (Internal code warning, make an issue on GitHub)\n");
-    }
     CharMemory tempCharMemory {};
 
     tempCharMemory.memory = static_cast<char*>(malloc(sizeof(char)*size));

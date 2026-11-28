@@ -29,7 +29,7 @@ int wmain(int argc, const wchar_t* argv[])
 
     bool decompress = false;
 
-    if (argc >= 3) 
+    if (argc >= 3)
     {
         if (!wcscmp(argv[2],L"1")) 
         {
@@ -125,7 +125,7 @@ int wmain(int argc, const wchar_t* argv[])
         RESET_FILEBUFFER();
 
         CharMemory returnCharMemory{};
-        returnCharMemory.memory = allocateCharMemory(charMemory.used,true);
+        returnCharMemory.memory = allocateSecondCharMemory(charMemory.used);
         returnCharMemory.capacity = charMemory.used;
 
         if(!returnCharMemory.memory)
@@ -186,7 +186,7 @@ int wmain(int argc, const wchar_t* argv[])
         }
 
         CharMemory returnCharMemory{};
-        returnCharMemory.memory = allocateCharMemory(fileBuffer.capacity*2,true);
+        returnCharMemory.memory = allocateSecondCharMemory(fileBuffer.capacity*2);
         returnCharMemory.capacity = fileBuffer.used;
 
         if(!returnCharMemory.memory)
@@ -208,26 +208,19 @@ int wmain(int argc, const wchar_t* argv[])
 
                 char repeatedChar = fileBuffer.memory[i+2];
 
-                if(amount<3)
-                {
-                    ABORT_ERROR("Decompressing failed, (hint: compressed file invalid) aborting...");
-                    return 1;
-                }
-                else
+                if(amount<=9 && amount>0)
                 {
                     for(int u{0};u<amount;u++)
                     {
                         returnCharMemory.memory[out] = repeatedChar;
                         out++;
                     }
+                    i+=2;
+                    continue;
                 }
-                i+=2;
             }
-            else
-            {
-                returnCharMemory.memory[out] = fileBuffer.memory[i];
-                out++;
-            }
+            returnCharMemory.memory[out] = fileBuffer.memory[i];
+            out++;
         }
 
         // end decompressor
